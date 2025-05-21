@@ -1,0 +1,57 @@
+import org.testng.annotations.*;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+
+import java.time.Duration;
+
+import static org.testng.Assert.*;
+
+public class ToDoTest {
+
+		    WebDriver driver;
+		    ToDoPage todo;
+
+		    @BeforeClass
+		    public void setUp() {
+		        //System.setProperty("webdriver.chrome.driver", "path/to/chromedriver"); // Update path
+		        driver = new ChromeDriver();
+		        driver.manage().window().maximize();
+		        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+		        driver.get("https://todomvc.com/examples/react/dist/");
+
+		        todo = new ToDoPage(driver);
+		    }
+
+		    @Test(priority = 1)
+		    public void testAddTasks() {
+		        todo.addTask("Task 1");
+		        todo.addTask("Task 2");
+		        todo.addTask("Task 3");
+
+		        assertEquals(todo.getTasks().size(), 3, "Three tasks should be added.");
+		    }
+
+		    @Test(priority = 2)
+		    public void testMarkSecondTaskCompleted() {
+		        todo.markTaskCompleted(1); // Index starts from 0
+
+		        boolean isCompleted = todo.getTasks().get(1).getAttribute("class").contains("completed");
+		        assertTrue(isCompleted, "Second task should be marked as completed.");
+		    }
+
+		    @Test(priority = 3)
+		    public void testDeleteFirstTask() {
+		        todo.deleteTask(0); // Delete "Task 1"
+
+		        assertEquals(todo.getTasks().size(), 2, "One task should be deleted, leaving two.");
+		    }
+
+		    @AfterClass
+		    public void tearDown() {
+		        driver.quit();
+		    }
+		}
+
+
+
