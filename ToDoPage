@@ -1,0 +1,43 @@
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+
+       public class ToDoPage {
+		    WebDriver driver;
+
+		    @FindBy(className = "new-todo")
+		    WebElement inputField;
+
+		    public ToDoPage(WebDriver driver) {
+		        this.driver = driver;
+		        PageFactory.initElements(driver, this);
+		    }
+
+		    public void addTask(String task) {
+		        inputField.sendKeys(task + Keys.ENTER);
+		    }
+
+		    public List<WebElement> getTasks() {
+		        return driver.findElements(By.cssSelector(".todo-list li"));
+		    }
+
+		    public void markTaskCompleted(int index) {
+		        driver.findElements(By.cssSelector(".toggle")).get(index).click();
+		    }
+
+		    public void deleteTask(int index) {
+		        Actions a = new Actions(driver);
+		        WebElement task = getTasks().get(index);
+		        a.moveToElement(task).perform();
+		        task.findElement(By.className("destroy")).click();
+		    }
+		}
+
+
+
