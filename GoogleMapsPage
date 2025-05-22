@@ -1,0 +1,77 @@
+
+package pages;
+
+import java.time.Duration;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class GoogleMapsPage {
+	    WebDriver driver;
+
+	    // Constructor
+	    public GoogleMapsPage(WebDriver driver) {
+	        this.driver = driver;
+	    }
+
+	    // Locators
+	    By searchBox = By.id("searchbox");
+	    By searchResultTitle = By.xpath("//h1[contains(@class,'fontHeadlineLarge')]");
+	    By directionsButton = By.xpath("//button[@data-value='Directions']");
+	    By startLocationBox = By.xpath("//div[@id='directions-searchbox-0']//input");
+	    By endLocationBox = By.xpath("//div[@id='directions-searchbox-1']//input");
+	    By routeDistance = By.xpath("//div[contains(@class,'section-directions-trip-distance')]");
+
+	    // Actions
+	    public void openMaps() {
+	        driver.get("https://www.google.com/maps");
+	    }
+
+	    public void searchLocation(String location) throws InterruptedException {
+	        driver.findElement(searchBox).clear();
+	        driver.findElement(searchBox).sendKeys(location);
+	        driver.findElement(searchBox).sendKeys(Keys.ENTER);
+	        Thread.sleep(5000); // wait for search result
+	    }
+
+	    
+	    public String getSearchResultTitle() {
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+	        WebElement markerTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(
+	            By.xpath("//div[contains(@aria-label, 'Eiffel Tower')]")
+	        ));
+	        return markerTitle.getAttribute("aria-label");
+	    }
+	    
+
+	    public void clickDirections() throws InterruptedException {
+	        driver.findElement(directionsButton).click();
+	        Thread.sleep(3000);
+	    }
+
+	    public void enterStartAndEnd(String start, String end) throws InterruptedException {
+	        driver.findElement(startLocationBox).sendKeys(start);
+	        Thread.sleep(1000);
+	        driver.findElement(endLocationBox).sendKeys(end);
+	        driver.findElement(endLocationBox).sendKeys(Keys.ENTER);
+	        Thread.sleep(5000);
+	    }
+
+	  
+	    
+	    public String getDistance() {
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+	        WebElement distanceElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
+	            By.xpath("//div[contains(text(),'mi') or contains(text(),'km')]")
+	        ));
+	        return distanceElement.getText();
+	    }
+        
+	    
+}
+
+
