@@ -1,0 +1,42 @@
+package testcases;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.*;
+import pages.GoogleMapsPage;
+
+public class GoogleMapsTest {
+
+    WebDriver driver;
+    GoogleMapsPage maps;
+
+    @BeforeClass
+    public void setUp() {
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        maps = new GoogleMapsPage(driver);
+    }
+
+    @Test(priority = 1)
+    public void testSearchLocationAndMarker() throws InterruptedException {
+        maps.openMaps();
+        Thread.sleep(3000);
+        maps.searchLocation("Eiffel Tower");
+        String title = maps.getSearchResultTitle();
+        Assert.assertTrue(title.contains("Eiffel Tower"), "Marker location validation failed.");
+    }
+
+    @Test(priority = 2)
+    public void testRouteAndDistanceValidation() throws InterruptedException {
+        maps.clickDirections();
+        maps.enterStartAndEnd("New York", "Boston");
+        String distance = maps.getDistance();
+        System.out.println("Route Distance: " + distance);
+        Assert.assertTrue(distance.contains("mi") || distance.contains("km"), "Distance not found.");
+    }
+
+    @AfterClass
+    public void tearDown() {
+        driver.quit();
+    }
+}
